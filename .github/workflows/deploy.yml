@@ -1,27 +1,57 @@
-name: Deploy to K3s
+name: Deploy to Kubernetes (VM Azure)
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout do repositório
+    - name: Checkout
       uses: actions/checkout@v3
 
+    # Instalar kubectl
     - name: Instalar kubectl
-      run: sudo snap install kubectl --classic
-
-    - name: Criar kubeconfig
       run: |
-        mkdir -p ~/.kube
-        echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+        sudo snap install kubectl --classic
 
-    - name: Testar conexão com cluster
-      run: kubectl get nodes --insecure-skip-tls-verify=true
+    # Instalar sshpass (necessário para usar senha no SSH)
+    - name: Instalar sshpass
+      run: sudo apt-get update && sudo apt-get install -y sshpass
 
-    - name: Aplicar arquivos Kubernetes
-      run: kubectl apply -f deploy.yaml --insecure-skip-tls-verify=true
+    # Baixar kubeconfig da VM usando senha
+    - name: Baixar kubeconfig
+      run: |
+        sshpass -p "${{ secrets.AZURE_VM_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
+        ${{ secrets.AZURE_VM_USER }}@${{ secrets.AZURE_VM_IP }} \
+        "sudo cat /etc/rancher/k3s/k3s.yaml" > kubeconfig
+
+        # Trocar o IP interno pelo IP público
+        sed -i "s/127.0.0.1/${{ secrets.AZURE_VM_IP }}/g" kubeconfig
+
+    # Configurar variável de ambiente
+    - name: Configurar KUBECONFIG
+      run: echo "KUBECONFIG=$GITHUB_WORKSPACE/kubeconfig" >> $GITHUB_ENV
+
+    # Testar acesso ao cluster
+    - name: Testar cluster
+      run: |
+        kubectl get nodes --insecure-skip-tls-verify=true
+
+    # Aplicar manifests
+    - name: Aplicar k8s manifests
+      run: |
+        kubectl apply -f k8s/ --insecure-skip-tls-verify=true
+
+    # Verificar pods
+    - name: Verificar pods
+      run: |
+        kubectl get pods -o wide --insecure-skip-tls-verify=true
+
+    # Verificar services
+    - name: Verificar services
+      run: |
+        kubectl get svc --insecure-skip-tls-verify=true
