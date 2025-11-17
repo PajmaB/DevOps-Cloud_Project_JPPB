@@ -9,10 +9,49 @@ data:
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Kubernets Test</title>
+        <title>Kubernetes Test</title>
+
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                background: #f1f1f1;
+                padding: 50px;
+                text-align: center;
+            }
+
+            h1 {
+                color: #222;
+                margin-bottom: 40px; /* Mais espaço entre os textos */
+            }
+
+            .mensagem {
+                margin-top: 40px;
+                padding: 25px;
+                font-size: 24px;
+                font-weight: bold;
+                color: #333;
+
+                /* Caixa com borda bonita */
+                border: 3px solid #6a00ff;
+                border-radius: 15px;
+                background: white;
+
+                /* Sombra para destacar */
+                box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+
+                /* Largura suave */
+                display: inline-block;
+            }
+        </style>
     </head>
     <body>
-        <h1>Deploy Automático do HTML via Kubernets (K3s + Github Action)</h1>
+        <h1>Deploy Automático do HTML via Kubernetes (K3s + Github Actions)</h1>
         <h1>Funcionando via NGINX + Kubernetes na VM Azure! 🚀</h1>
+
+        <div class="mensagem">
+            Vote José Guilherme para melhor professor 🎓✨
+        </div>
     </body>
     </html>
+
+
