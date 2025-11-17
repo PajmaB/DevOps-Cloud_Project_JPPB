@@ -24,4 +24,4 @@ jobs:
       run: kubectl get nodes --insecure-skip-tls-verify=true
 
     - name: Aplicar arquivos Kubernetes
-      run: kubectl apply -f deployment.yaml --insecure-skip-tls-verify=true
+      run: kubectl apply -f deploy.yaml --insecure-skip-tls-verify=true
