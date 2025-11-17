@@ -21,7 +21,7 @@ jobs:
         echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
 
     - name: Testar conexão com cluster
-      run: kubectl get nodes
+      run: kubectl get nodes --insecure-skip-tls-verify=true
 
     - name: Aplicar arquivos Kubernetes
-      run: kubectl apply -f .
+      run: kubectl apply -f deployment.yaml --insecure-skip-tls-verify=true
